@@ -26,10 +26,10 @@ pip install -r requirements.txt
 
 ### Usage
 
-1. **Configure OpenAI API Key**: Enter your OpenAI API key in `codes/SyntheticDataGeneration/configs.py`:
+1. **Configure OpenAI API Key**: Enter your OpenAI API key in `codes/SyntheticDataGeneration/generate_samples_Sick.py`:
 
    ```python
-   (line 6) openai_key = "Your-OpenAI-Key"
+   (line 23) openai_key = "Your-OpenAI-Key"
    ```
 
 2. **Generate Synthetic Datasets**: 
@@ -38,16 +38,14 @@ pip install -r requirements.txt
 
    ```bash
    cd codes/SyntheticDataGeneration
-   python generate_samples.py --dataset Sick
+   python generate_samples_Sick.py
    cd ..
    ```
 
-   If you want use other dataset, just modify the '--dataset' in the terminal.For example, use the Travel dataset:
+   If you want use other dataset:
    ```bash
-   python generate_samples.py --dataset Travel
+   python generate_samples_travel.py 
    ```
-
-   In `codes/SyntheticDataGeneration/configs.py`, you can also modify the parameters of the corresponding dataset, such as N_batch, initial_prompt, etc.
 
 3. **Train and Evaluate Downstream Task Models**:
    To evaluate the quality of the synthetic data, use the following command:
@@ -60,15 +58,10 @@ pip install -r requirements.txt
 
    ```bash
    <!-- Use Llama3 Model -->
-   python generate_samples_Sick_llama3.py --dataset Sick
+   cd ./codes/SyntheticDataGeneration/llama
+   python generate_samples_Sick_llama.py
 
    <!-- Use Mistral Model-->
-   python generate_samples_Sick_mistral.py --dataset Sick
+   cd ./codes/SyntheticDataGeneration/llama
+   python generate_samples_Sick_mistral.py 
    ```
-
-## Citation
-
-If you find this work or code is helpful in your research, please cite:
-```
-
-```
