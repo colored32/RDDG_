@@ -1,3 +1,15 @@
+"""
+Note: We partially utilize the implementations from EPIC, especially concerning the preprocessing of categorical attributes :
+   
+https://github.com/seharanul17/synthetic-tabular-LLM
+
+EPIC: Effective Prompting for Imbalanced-Class Data Synthesis in Tabular Data Classification via Large Language Models, NeurIPS 2024.
+
+However, for our proposed framework, we implement it on our own. 
+
+Unless otherwise stated, GPT-3.5  (GPT-3.5-turbo-0125) is used as the default LLM. But we do  support changing the LLM to  Llama3 and Mistral.
+"""
+
 import openai
 import os
 from dotenv import load_dotenv

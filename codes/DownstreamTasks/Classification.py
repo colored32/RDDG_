@@ -1,3 +1,9 @@
+"""
+To be consistent with EPIC, here we use the same implementation for imbalanced classification evaluations as EPIC:
+https://github.com/seharanul17/synthetic-tabular-LLM
+EPIC: Effective Prompting for Imbalanced-Class Data Synthesis in Tabular Data Classification via Large Language Models, NeurIPS 2024.
+"""
+
 import os
 import numpy as np
 import pandas as pd
@@ -117,22 +123,18 @@ def categorical_variable_encode(configs, X_train, y_train, X_test, y_test, real_
 
     X_columns = X_train.columns
 
-    if configs['data'] == 'income':
-        target_encode = True
-        cat_idx = [1, 3, 5, 6, 7, 8, 9, 13]
-    elif configs['data'] == 'HELOC':
+    if configs['data'] == 'HELOC':
         target_encode = True  # ['Bad', 'Good']
-        cat_idx = []  # https://github.com/kathrinse/TabSurvey/blob/main/config/heloc.yml
-    elif configs['data'] == 'Diabetes':
-        target_encode = True  # ['NO', '<30', '>30']
-        cat_idx = [2, 3, 4, 5, 10, 11, 18, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-                   39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
+        cat_idx = [] 
     elif configs['data'] == 'Sick':
         target_encode = True  # ['negative','sick']
         cat_idx = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26]
     elif configs['data'] == 'Travel':
         target_encode = False  # [0, 1]
         cat_idx = [1, 2, 4, 5]
+    elif configs['data'] == 'Thyroid':
+        target_encode = True
+        cat_idx = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     else:
         raise NotImplementedError
     if target_encode:
@@ -202,12 +204,8 @@ def get_data(configs, syn_data_save_dir, real_data_save_dir):
 
         n = configs['synSamples']
         synSamplingIndex = configs['synSamplingIndex']
-        if configs['data'] == 'Diabetes':
-            n_samples_syn_index = 10000
-        elif configs['data'] == 'income':
-            n_samples_syn_index = 20000
-        else:
-            n_samples_syn_index = 1000
+        
+        n_samples_syn_index = 1000
 
         samples = pd.read_csv(os.path.join(syn_data_save_dir, f"{configs['data']}_samples.csv"))
         y_train_sample = pd.DataFrame(samples[configs['target']]).iloc[
@@ -227,21 +225,13 @@ def get_data(configs, syn_data_save_dir, real_data_save_dir):
     else:
         n = configs['synSamples']
         synSamplingIndex = configs['synSamplingIndex']
-        if configs['data'] == 'Diabetes':
-            n_samples_syn_index = 10000
-        elif configs['data'] == 'income':
-            n_samples_syn_index = 20000
-        else:
-            n_samples_syn_index = 1000
+        n_samples_syn_index = 1000
 
         samples = pd.read_csv(os.path.join(syn_data_save_dir, f"{configs['data']}_samples.csv"))
         y_train = pd.DataFrame(samples[configs['target']]).iloc[
                   synSamplingIndex * n_samples_syn_index:synSamplingIndex * n_samples_syn_index + n]
         X_train = samples.drop(columns=[configs['target']]).iloc[
                   synSamplingIndex * n_samples_syn_index:synSamplingIndex * n_samples_syn_index + n]
-
-        if configs['data'] == 'Diabetes':
-            X_train = X_train.fillna('?')
 
         n_syn = X_train.shape[0]
         n_org_train = 0
@@ -268,19 +258,17 @@ def init_models(args, random_state):
 
 
 DATA2TARGET = {
-    'income': 'income',
-    'Diabetes': 'readmitted',
     'HELOC': 'RiskPerformance',
     'Sick': 'Class',
-    'Travel': 'Target'
+    'Travel': 'Target',
+    'Thyroid': 'Recurred'
 }
 
 DATA2NCLASS = {
-    'income': 2,
-    'Diabetes': 3,
     'HELOC': 2,
     'Sick': 2,
-    'Travel': 2
+    'Travel': 2,
+    'Thyroid': 2
 }
 
 ML_PARAMS = {
@@ -302,17 +290,11 @@ ML_PARAMS = {
         'rf_max_depth': 12,
         'rf_n_estimators': 78,
     },
-    'income': {
-        'lr_max_iter': 1000,
-        'dt_max_depth': 8,
-        'rf_max_depth': 12,
-        'rf_n_estimators': 85,
-    },
-    'Diabetes': {
+    'Thyroid':{
         'lr_max_iter': 500,
         'dt_max_depth': 10,
         'rf_max_depth': 20,
-        'rf_n_estimators': 120,
+        'rf_n_estimators': 100,
     }
 }
 
