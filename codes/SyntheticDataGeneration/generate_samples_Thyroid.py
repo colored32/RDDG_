@@ -46,7 +46,7 @@ params = {
     "N_SET": 4,
     "USE_RANDOM_WORD": True,
     "N_CORESETS_BATCH": 1,
-    "N_BATCH": 30,
+    "N_BATCH": 20,
     "MODEL_NAME": "Thyroid_STPrompt",
     "N_TARGET_SAMPLES": 1000,
 }
